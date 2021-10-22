@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head id='heading'>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <title>Creature!</title>
+
+    <!-- creature.js creates the creature! -->
+    <script src="creature.js"></script>
+
+    <!-- render.js draws the creature! This code is math-heavy. -->
+    <script src="render.js"></script>
+
+    <!-- animations.js tells render.js how to draw the creature. -->
+    <script src="animations.js"></script>
+
+    <!-- init.js starts the program. This code is very complicated! -->
+    <script src="init.js"></script>
+</head>
+
+<!-- What you see starts here. -->
+
+<body>
+    <!-- Here's where the creature moves around -->
+    <div>
+        <canvas id='play-pen-canvas' width='500' height='500'>
+        </canvas>
+    </div>
+
+    <!-- to add a new action, copy the button and give it a new name. -->
+    <button type="button" class='action'>Nudge</button>
+    <button type="button" class='action'>Pet</button>
+    <button type="button" class='action'>Feed</button>
+
+    <!-- Here's the part where you change the creature! -->
+    <script>
+        init();
+    </script>
+</body>
+
+</html>
