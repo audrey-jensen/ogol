@@ -109,8 +109,11 @@ const creature = {
     eat(thing) {
         creature.reset();
         behavior = 'eat'; 
-        food = thing; 
+        food = thing;
         busy = thing.length * 2; 
+
+        if(stomach < 1) stomach = 1;
+        if(energy < 1) energy = 1;
     },
     cry(t) { 
         creature.reset();
@@ -132,14 +135,14 @@ const creature = {
 
 // this function is called to determine what the creature is doing.
 function simulate(time, input) {
-    if (creature.isStarving()) {
+    if(input.isPlayerAction()) {
+        input.doPlayerAction(creature);
+    }
+    else if (creature.isStarving()) {
         creature.cry(1);
     }
     else if (creature.isExhausted()) {
         creature.sleep(1);
-    }
-    else if(input.isPlayerAction()) {
-        input.doPlayerAction(creature);
     }
     else {
         doCreatureAction(creature);
@@ -228,7 +231,6 @@ function updateCreature()
             if(busy % 2 === 1) {
                 food = food.substring(1);
             }
-            energy -= 1;
             stomach += 5;
             break;
 
