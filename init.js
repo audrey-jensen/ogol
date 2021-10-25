@@ -104,7 +104,7 @@ function initPlayer() {
         // the event removes invalid characters, such as spaces or exclamation
         // points, from the button so that it can name a function.
         input.buttonText = event.target.innerText;
-        input.functionName = input.buttonText.replace(/\W/, '');
+        input.functionName = input.buttonText.replace(/\W/g, '');
     })
 
     return input;
