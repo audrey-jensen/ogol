@@ -54,6 +54,7 @@ const MAX_TURNS = 100;
 const ENERGY_CAPACITY = 1000;
 const STOMACH_CAPACITY = 100;
 
+const GOTO_SPEED = 6;
 
 ////////////////////////////////////////////////////////////////////////////////
 // this object is used to ask the creature do do things
@@ -242,30 +243,33 @@ function doAction()
             animation = 'moving';
             energy -= 4;
             
-            x_position = randomWalk(x_position, 4, 12, MIN_X_POSITION, MAX_X_POSITION);
-            y_position = randomWalk(y_position, 4, 12, MIN_Y_POSITION, MAX_Y_POSITION);
+            if (goto_x === null || goto_y === null) {
+                goto_x = wholeNumberBetween(MIN_X_POSITION, MAX_X_POSITION);
+                goto_y = wholeNumberBetween(MIN_Y_POSITION, MAX_Y_POSITION);
+            }
+
+            const x_speed = wholeNumberBetween(0, 8);
+            const y_speed = wholeNumberBetween(0, 8);
+            x_position = walk(x_position, goto_x, x_speed);
+            y_position = walk(y_position, goto_y, y_speed);
+
+            if (busy == 0) {
+                goto_x = null;
+                goto_y = null;
+            }
             break;
 
         case 'goto':
             animation = 'moving';
-            energy -= 8;
+            energy -= 6;
 
-            if (goto_x > x_position) {
-                x_position++;
-            }
-            else if (goto_x < x_position) {
-                x_position--;
-            }
-
-            if(goto_y > y_position) {
-                y_position++;
-            }
-            else if (goto_y < y_position) {
-                y_position--;
-            }
+            x_position = walk(x_position, goto_x, GOTO_SPEED);
+            y_position = walk(y_position, goto_y, GOTO_SPEED);
 
             if (x_position === goto_x && y_position === goto_y) {
                 busy = 0;
+                goto_x = null;
+                goto_y = null;
             }
             break;
 
@@ -319,17 +323,17 @@ function wholeNumberBetween(min, max) {
     return min + Math.round(Math.random() * range);
 }
 
-// get a random true or false (heads or tails)
-function flipCoin(){
-    return Math.random() >= .5;
-}
-
-// moves a random distance away from a position
-function randomWalk(position, minDistance, maxDistance, minPosition, maxPosition){
-    const distance = wholeNumberBetween(minDistance, maxDistance);
-    const newPosition = flipCoin() ? position + distance : position - distance;
-
-    return clamp(newPosition, minPosition, maxPosition);
+// moves from startingAt towards destination at speed without passing destination.
+function walk(startingAt, destination, speed) {
+    if (destination > startingAt) {
+        return startingAt + Math.min(destination - startingAt, speed);
+    }
+    else if (destination < startingAt) {
+        return startingAt - Math.min(startingAt - destination, speed);
+    }
+    else {
+        return destination;
+    }
 }
 
 // Ensures value falls within minimim and maximum. If value is outside of a bound,
