@@ -54,6 +54,12 @@ const SPRITE_INFO = {
                 frames: [[0,0], [32,0]],
                 time: [8, 8] 
             }, 
+            hyper: { 
+                colorSprite: "img/stage-0/Color/1_cheer.png", 
+                size: [32, 32], 
+                frames: [[0,0], [32,0]],
+                time: [2, 2] 
+            }, 
             eating: { 
                 colorSprite: "img/stage-0/Color/1_eating.png", 
                 size: [32, 32], 
@@ -70,7 +76,7 @@ const SPRITE_INFO = {
                 colorSprite: "img/stage-0/Color/1_walk.png", 
                 size: [32, 32], 
                 frames: [[0,0], [32,0], [64,0], [96,0], [128,0]],
-                time: [4, 4, 4, 4, 4]
+                time: [2, 3, 5, 4, 3]
             }
         }
 };

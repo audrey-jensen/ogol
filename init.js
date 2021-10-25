@@ -15,54 +15,97 @@ const TICKS_PER_SECOND = MILLISECONDS_PER_SECOND / 4.0;
 // the program starts here.
 async function init() {
     // load how the creature looks
-    let stage0Sprite = await loadSpriteSheet('stage-0');
+    const stage0Sprite = await loadSpriteSheet('stage-0');
 
     // create the loops that bring the creature to life
     const renderLoop = yieldingLoop(render, FRAMES_PER_SECOND);
     const simLoop = yieldingLoop(simulate, TICKS_PER_SECOND);
 
-    // hook up the screen
-    const canvas = document.getElementById('play-pen-canvas');
-    const context = canvas.getContext('2d');
-    context.fillStyle = '#5c4e3d'
-    context.fillRect(0, 0, canvas.width, canvas.height);
+    // hook up the screen. The background color matches the background color of
+    // stage0Sprite.
+    const { screen, meters } = initScreen('#5c4e3d')
 
     // hook up player input
-    const input = initializeInput();
+    const player = initPlayer();
 
-    renderLoop(true, context, stage0Sprite);
-    simLoop(true, input);
+    // start drawing the creature on the screen
+    renderLoop(true, screen, meters, stage0Sprite);
+
+    // start the creature simulation
+    simLoop(true, player);
 }
 
+// Creates the screen that the creature is drawn on.
+function initScreen(backgroundColor){
+    // canvas displays the creature
+    const canvas = document.getElementById('play-pen-canvas');
 
-// Adds player inputs.
-function initializeInput() {
+    // context draws the creature
+    const screen = canvas.getContext('2d');
+
+    // fill the background in with a single color.
+    screen.fillStyle = backgroundColor;
+    screen.fillRect(0, 0, canvas.width, canvas.height);
+    
+    const meters = {
+        energy: document.getElementById('energy'),
+        stomach: document.getElementById('stomach')
+    };
+
+    meters.stomach.min = 0;
+    meters.energy.min = 0;
+    meters.stomach.max = STOMACH_CAPACITY;
+    meters.energy.max = ENERGY_CAPACITY;
+
+    return { screen, meters };
+}
+
+// Creates player input. When the player clicks a button, it can affect the creature's
+// behavior.
+function initPlayer() {
     const input = {
-        value: null,
+        buttonText: '',
+        functionName: null,
 
         // checks whether there's a player action to run.
-        isPlayerAction() {
-            if(!this.value) return false;
-
-            const normalized = this.value.replace(/\W/, '');
-            return typeof window[normalized] === typeof Function;
+        hasCommand() {
+            // check if a matching function exists
+            return this.functionName !== null;
         },
 
         // runs the player action and resets the input
-        doPlayerAction(creature) {
-            if(!this.value) return false;
+        command(creature) {
+            // move functionName to a variable so that `doAction` runs the function 
+            // only at most once per button click.
+            const functionName = this.functionName || '';
+            this.functionName = null;
 
-            const normalized = this.value.replace(/\W/, '');
-            this.value = null;
-
-            window[normalized](creature);
+            // if the function exists, execute it
+            if(typeof window[functionName] === typeof Function){
+                window[functionName](creature);
+            }
+            else {
+                // if the function doesn't exist, warn the player that their button 
+                // isn't hooked up to anything.
+                const message = `The "${this.buttonText}" button didn't do anything` + 
+                    ` because a function named "${functionName}" doesn't exist.`;
+                console.warn(message);
+            }
+            
         }
     };
 
-    const actions = document.getElementsByClassName('action');
-    for(let action of actions) {
-        action.addEventListener('click', e => input.value = e.target.innerText);
-    }
+    // When the player clicks a button, capture the function to run in `functionName`
+    const actions = document.getElementById('actions');
+    actions.addEventListener('click', event => {
+        if(!event.target.matches('button')) return;
+        
+        // JavaScript functions can only use characters A-Z, 0-9, and underscore.
+        // the event removes invalid characters, such as spaces or exclamation
+        // points, from the button so that it can name a function.
+        input.buttonText = event.target.innerText;
+        input.functionName = input.buttonText.replace(/\W/, '');
+    })
 
     return input;
 }
@@ -89,7 +132,7 @@ async function loadSpriteSheet(spriteSheetName) {
 
     // gather all of the paths to our images in `paths`...
     const paths = [];
-    for(let animationName in SPRITE_INFO[spriteSheetName]) {
+    for(const animationName in SPRITE_INFO[spriteSheetName]) {
         paths.push(SPRITE_INFO[spriteSheetName][animationName].colorSprite);
     }
     // ...then load the images all at once into `images`!
@@ -98,24 +141,27 @@ async function loadSpriteSheet(spriteSheetName) {
 
     // `context` is used to add sprites to the sprite sheet
     const context = sprite.sheet.getContext('2d');
+
     // spritePosition tracks where we're saving the sprite into the sprite sheet.
     let spritePosition = [0,0];
+
     // Add all of the animation images into the sprite sheet
-    for(let animationName in SPRITE_INFO[spriteSheetName]) {
+    for(const animationName in SPRITE_INFO[spriteSheetName]) {
         const animation = SPRITE_INFO[spriteSheetName][animationName];
         const image = images[animation.colorSprite];
 
         // add the picture to the sprite sheet
-        let [x, y] = spritePosition;
+        const [x, y] = spritePosition;
         context.drawImage(image, x, y);
 
         // calculate where the frames are in the sprite sheet...
         const frames = [];
-        for(let [frame_x, frame_y] of animation.frames) {
+        for(const [frame_x, frame_y] of animation.frames) {
             const [frame_w, frame_h] = animation.size;
             const frame = [x + frame_x, y + frame_y, frame_w, frame_h];
             frames.push(frame);
         }
+
         // ...then save the new frames and times in the sprite.
         sprite.animations[animationName] = { 
             frames, 
@@ -135,11 +181,14 @@ async function loadSpriteSheet(spriteSheetName) {
 // Promise wrapper for loading images.
 // from https://stackoverflow.com/questions/37854355/wait-for-image-loading-to-complete-in-javascript
 async function loadImages(imageUrlArray) {
-    const promiseArray = []; // create an array for promises
-    const images = {}; // image lookup
+    // a list that holds things we're waiting for. JavaScript calls these "Promises".
+    const promises = [];
 
-    for (let imageUrl of imageUrlArray) {
-        promiseArray.push(new Promise(resolve => {
+    // an object that holds loaded images
+    const images = {};
+
+    for (const imageUrl of imageUrlArray) {
+        const promise = new Promise(resolve => {
             // create the object that stores the image
             images[imageUrl] = new Image();
 
@@ -148,11 +197,15 @@ async function loadImages(imageUrlArray) {
 
             // begin loading the image. Always do this after setting up `onload`!
             images[imageUrl].src = imageUrl;
-        }));
+        });
+
+        // add the promise to our list
+        promises.push(promise);
     }
 
     // wait for all the images to load
-    await Promise.all(promiseArray); 
+    await Promise.all(promises); 
+
     return images;
 }
 

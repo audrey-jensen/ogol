@@ -6,6 +6,8 @@
 
     <title>Creature!</title>
 
+    <link rel="stylesheet" href="ui.css" />
+
     <!-- creature.js creates the creature! -->
     <script src="creature.js"></script>
 
@@ -23,18 +25,86 @@
 
 <body>
     <!-- Here's where the creature moves around -->
-    <div>
+    <div id='play-pen'>
         <canvas id='play-pen-canvas' width='500' height='500'>
         </canvas>
     </div>
 
-    <!-- to add a new action, copy the button and give it a new name. -->
-    <button type="button" class='action'>Nudge</button>
-    <button type="button" class='action'>Pet</button>
-    <button type="button" class='action'>Feed</button>
+    <!-- Here's where the creature's energy and stomach are displayed. -->
+    <div id='indicators'>
+        <div>
+            <label for="energy">Energy: </label>
+            <div><meter id="energy"></meter></div>
+        </div>
+        <div>
+            <label for="stomach">Stomach:</label>
+            <div><meter id="stomach"></meter></div>
+        </div>
+    </div>
+
+    <!-- 
+        Buttons are how you interact with the creature. When a button is clicked,
+        it crea
+
+        To add a new action, add a button between <div id='actions'> and </div> 
+        and give it a name. Here's an empty button:
+
+            <button type="button"></button>
+    -->
+    <div id='actions'>
+        <button type="button">Pet</button>
+        <button type="button">Go To Left Corner</button>
+        <button type="button">Feed</button>
+    </div>
 
     <!-- Here's the part where you change the creature! -->
     <script>
+        // You can create a player action by creating a function named after the button.
+        // For example, the Pet button calls this function:
+
+        function Pet(creature) {
+            creature.cheer(4);
+        }
+
+
+        // This function causes the creature to cheer for 4 turns when you click the 'Pet' button.
+
+        // If your button has spaces, just remove them. So if your button is named "Go To Left Corner",
+        // then you can create a function like this:
+
+        function GoToLeftCorner(creature) {
+            creature.goto(0, 0);
+        }
+
+
+        // There are a bunch of things you can ask the creature to do:
+        //
+        //   creature.stop()           - ask the creature to stop what they're doing
+        //   creature.sleep(4)         - ask the creature to go to sleep for 4 turns
+        //                               sleeping gives the creature energy.
+        //   creature.rest(5)          - ask the creature to rest for 5 turns
+        //   creature.wander(20)       - ask the creature to walk around for 20 turns
+        //   creature.teleport(20, 21) - ask the creature to teleport to coordinates 
+        //                               X = 20, Y = 21. The creature has to rest
+        //                               after teleporting.
+        //   creature.goto(20, 21)     - ask the creature to walk to coordinates
+        //                               X = 20, Y = 21.
+        //   creature.eat("carrot")    - ask the creature to eat a carrot. This
+        //                               fills the creature's stomach. The creature
+        //                               can eat any word. The creature doesn't
+        //                               like 4-letter words, such as 'dirt'.
+        //   digest(4)                 - ask the creature to digest its food for 
+        //                               4 turns. Digesting  food gives the creature 
+        //                               energy.
+        //   cry(2)                    - ask the creature to cry for 2 turns.
+        //   cheer(4)                  - ask the creature to cheer for 4 turns.
+
+
+        // Try writing a function that prompts the player for a word and feeds it
+        // to the creature when they click the Feed button!
+    </script>
+    <script>
+        // this line starts the program. Don't change it. 🙂
         init();
     </script>
 </body>

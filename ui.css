@@ -1,0 +1,30 @@
+#play-pen, #actions {
+    margin: 1em;
+}
+
+#indicators {
+    display: table;
+    margin: 1.5em;
+    width: 500px;
+}
+
+#indicators > div {
+    display: table-row;
+}
+
+#indicators > div > * {
+    display: table-cell;
+    padding: 5px;
+}
+
+#indicators label {
+    width: 80px;
+}
+
+#indicators label + div {
+    display: table-cell
+}
+
+meter {
+    width: calc(100% - 1.5em);
+}
