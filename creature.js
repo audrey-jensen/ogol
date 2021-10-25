@@ -300,6 +300,7 @@ function doAction()
 
         case 'hyper':
             animation = 'hyper';
+            energy -= 10;
             break;
 
         case 'cheer':

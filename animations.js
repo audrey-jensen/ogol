@@ -55,6 +55,7 @@ const SPRITE_INFO = {
                 time: [8, 8] 
             }, 
             hyper: { 
+                // this animation is the same as cheerful but with different timings!
                 colorSprite: "img/stage-0/Color/1_cheer.png", 
                 size: [32, 32], 
                 frames: [[0,0], [32,0]],
