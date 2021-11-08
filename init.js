@@ -116,7 +116,7 @@ function initPlayer() {
 //
 // See also:
 // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Using_images
-// https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas
+// https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push
 async function loadSpriteSheet(spriteSheetName) {
 
@@ -125,12 +125,13 @@ async function loadSpriteSheet(spriteSheetName) {
     // we need to know more math to make it work.
     const sprite = {
         // sheet is the sprite sheet we draw the creature from
-        sheet: new OffscreenCanvas(300, 300),
+        sheet: document.createElement("canvas"),
 
         // animations saves where each frame is in the sprite sheet
         animations: {}
     }
-
+    sprite.sheet.width = 300;
+    sprite.sheet.height = 300;
 
     // gather all of the paths to our images in `paths`...
     const paths = [];
