@@ -8,16 +8,15 @@
 
     <link rel="stylesheet" href="ui.css" />
 
-    <!-- creature.js creates the creature! -->
+    <!-- 
+        creature.js creates the creature!
+        animations.js tells the program how to draw and animate the creature.
+        render.js draws the creature! You'll need to be good at math to edit this code.
+        init.js starts the program. You'll need to be good at JavaScript to edit this code.
+    -->
     <script src="creature.js"></script>
-
-    <!-- render.js draws the creature! This code is math-heavy. -->
-    <script src="render.js"></script>
-
-    <!-- animations.js tells render.js how to draw the creature. -->
     <script src="animations.js"></script>
-
-    <!-- init.js starts the program. This code is very complicated! -->
+    <script src="render.js"></script>
     <script src="init.js"></script>
 </head>
 
@@ -25,6 +24,7 @@
 
 <body>
     <!-- Here's where the creature moves around -->
+    <h1>This is <span id="creature-name"></span>.</h1>
     <div id='play-pen'>
         <canvas id='play-pen-canvas' width='500' height='500'>
         </canvas>
@@ -76,9 +76,14 @@
             creature.goto(0, 0);
         }
 
-
         // There are a bunch of things you can ask the creature to do:
         //
+        //   creature.sim(true)        - Start the creature simulator.
+        //   creature.sim(false)       - Pause the creature simulator.
+        //   creature.name("Dakota")   - sets the creature's name to 'Dakota'.
+        //   creature.name()           - gets the creature's name.
+        //   creature.reset()          - reset's the creature's position, stomach
+        //                               and energy to how they started.
         //   creature.stop()           - ask the creature to stop what they're doing
         //   creature.sleep(4)         - ask the creature to go to sleep for 4 turns
         //                               sleeping gives the creature energy.
@@ -93,11 +98,11 @@
         //                               fills the creature's stomach. The creature
         //                               can eat any word. The creature doesn't
         //                               like 4-letter words, such as 'dirt'.
-        //   digest(4)                 - ask the creature to digest its food for 
+        //   creature.digest(4)        - ask the creature to digest its food for 
         //                               4 turns. Digesting  food gives the creature 
         //                               energy.
-        //   cry(2)                    - ask the creature to cry for 2 turns.
-        //   cheer(4)                  - ask the creature to cheer for 4 turns.
+        //   creature.cry(2)           - ask the creature to cry for 2 turns.
+        //   creature.cheer(4)         - ask the creature to cheer for 4 turns.
 
 
         // Try writing a function that prompts the player for a word and feeds it

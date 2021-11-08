@@ -18,6 +18,11 @@ function render(time, screen, meters, sprite) {
 function updateMeters(meters, stats) {
     meters.energy.value = stats.energy;
     meters.stomach.value = stats.stomach;
+
+    // this can be really slow, so it only updates when the creature's name changes.
+    if(meters.name.innerText !== stats.name) {
+        meters.name.innerText = stats.name;
+    }
 }
 
 // draws a creature into the context

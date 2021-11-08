@@ -48,6 +48,7 @@ function initScreen(backgroundColor){
     screen.fillRect(0, 0, canvas.width, canvas.height);
     
     const meters = {
+        name: document.getElementById('creature-name'),
         energy: document.getElementById('energy'),
         stomach: document.getElementById('stomach')
     };
@@ -63,6 +64,8 @@ function initScreen(backgroundColor){
 // Creates player input. When the player clicks a button, it can affect the creature's
 // behavior.
 function initPlayer() {
+    // input is an `anonymous type`. Anonymous types are a bit like classes, but
+    // each one is unique. They don't share a type, like classes do.
     const input = {
         buttonText: '',
         functionName: null,
@@ -91,7 +94,6 @@ function initPlayer() {
                     ` because a function named "${functionName}" doesn't exist.`;
                 console.warn(message);
             }
-            
         }
     };
 
