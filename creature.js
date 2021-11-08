@@ -5,11 +5,6 @@ const MIN_Y_POSITION = 20;
 const MAX_X_POSITION = 460;
 const MAX_Y_POSITION = 460;
 
-const UP = 'UP';
-const DOWN = 'DOWN';
-const LEFT = 'LEFT';
-const RIGHT = 'RIGHT';
-
 const MIN_TURNS = 0;
 const MAX_TURNS = 100;
 
@@ -27,6 +22,13 @@ const DEFAULT_ANIMATION = 'sleeping';
 const DEFAULT_BEHAVIOR = 'wander';
 const DEFAULT_STOMACH = 75;
 const DEFAULT_ENERGY = 800;
+
+// these contstants are the directions the creature can move.
+const UP = 'UP';
+const DOWN = 'DOWN';
+const LEFT = 'LEFT';
+const RIGHT = 'RIGHT';
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // The Creature class defines how individual creatures (aka "instances" or "objects")
@@ -157,6 +159,11 @@ class Creature {
 
     // creature.teleport(125, 225) - ask the creature to teleport to X = 125, Y = 225
     teleport(x, y) {
+        if(this.isStarving()) {
+            console.error(`${this.myName} is too hungry to teleport!`);
+            return;
+        }
+
         this.stop();
         this.busy = 6;
         this.behavior = 'digest';
