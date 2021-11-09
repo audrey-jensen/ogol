@@ -13,9 +13,15 @@ const STOMACH_CAPACITY = 100;
 
 const GOTO_SPEED = 6;
 
+// These contants are presets for common pronouns
+const NO_PRONOUNS = [];
+const THEY_PRONOUNS = ["they", "them", "their", "theirs"];
+const SHE_PRONOUNS = ["she", "her", "her", "hers"];
+const HE_PRONOUNS = ["he", "him", "his", "his"];
+
 // How the creature is if you don't change them.
 const DEFAULT_NAME = "OGOL";
-const DEFAULT_PRONOUNS = ["they", "them", "their"];
+const DEFAULT_PRONOUNS = THEY_PRONOUNS;
 const DEFAULT_X_POSITION = 200;
 const DEFAULT_Y_POSITION = 200;
 const DEFAULT_ANIMATION = 'sleeping';
@@ -89,7 +95,7 @@ class Creature {
     // new Creature("Whitney") - creates a new creature named "Whitney".
     constructor(name, pronouns){
         this.myName = name || DEFAULT_NAME;
-        this.myPronouns = pronouns || ["they", "them", "their"];
+        this.myPronouns = pronouns || DEFAULT_PRONOUNS;
         this.reset();
     }
 
@@ -123,7 +129,8 @@ class Creature {
             console.info('Yay! A new name!');
         }
         else {
-            console.warn(`${this.myName} only cheers when their name changes.`);
+            let message = `${this.myName} only cheers when ${pronoun(this, 2)} name changes.`;
+            console.warn(message);
         }
     }
 
@@ -136,11 +143,11 @@ class Creature {
         const ps = (pronouns || []).flat();
         
         // set the creature's pronouns if there were 3 listed.
-        if(pronouns.length % 3 === 0) {
+        if(ps.length % 4 === 0) {
             this.myPronouns = ps;
         }
         else {
-            console.error('You must specify pronouns in sets of 3.');
+            console.error('You must specify pronouns in sets of 4.');
         }
     }
 
@@ -518,6 +525,11 @@ function clamp(value, minumum, maximum) {
     else return value;
 }
 
+// looks up a particular pronoun by type.
+function pronoun(creature, index) {
+    if(creature.myPronouns.length === 0) return creature.myName;
+    return creature.myPronouns[index] || creature.myName;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Functions called when rendering the creature
