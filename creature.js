@@ -127,6 +127,23 @@ class Creature {
         }
     }
 
+    // creature.pronouns('she', 'her', 'hers') - changes the creature's pronouns 
+    //                      to she/her/hers.
+    // creature.pronouns(['he', 'him', 'his', 'they', 'their', 'theirs']) - changes 
+    //                      the creature's pronouns to he/him/his/they/their/theirs.
+    pronouns(...pronouns) {
+        // allow pronouns to be input as individual arguments or as a list
+        const ps = (pronouns || []).flat();
+        
+        // set the creature's pronouns if there were 3 listed.
+        if(pronouns.length % 3 === 0) {
+            this.myPronouns = ps;
+        }
+        else {
+            console.error('You must specify pronouns in sets of 3.');
+        }
+    }
+
     // creature.stop() - ask the creature to stop what they're doing. You should
     //                   ask them to do something new after asking them to stop!
     stop() { 
@@ -506,13 +523,26 @@ function clamp(value, minumum, maximum) {
 // Functions called when rendering the creature
 
 //  get the creature's position and animation
+let lastPronouns = null;
+let formattedPronouns = '';
 function getCreature() {
     const position = [OGOL.x_position, OGOL.y_position];
+
+    // pronoun calculation is expensive, so only do it when needed
+    if(lastPronouns !== OGOL.myPronouns) {
+        lastPronouns = OGOL.myPronouns;
+        formattedPronouns = OGOL.myPronouns.join('/');
+        if(formattedPronouns !== '') {
+            formattedPronouns = '(' +  formattedPronouns + ')';
+        }
+    }
+
     return { 
         position, 
         animation: OGOL.animation, 
         stats: { 
             name: OGOL.myName,
+            pronouns: formattedPronouns,
             stomach: OGOL.stomach, 
             energy: OGOL.energy 
         } 

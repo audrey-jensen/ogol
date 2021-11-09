@@ -49,6 +49,7 @@ function initScreen(backgroundColor){
     
     const meters = {
         name: document.getElementById('creature-name'),
+        pronouns: document.getElementById('creature-pronouns'),
         energy: document.getElementById('energy'),
         stomach: document.getElementById('stomach')
     };

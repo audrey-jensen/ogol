@@ -23,6 +23,10 @@ function updateMeters(meters, stats) {
     if(meters.name.innerText !== stats.name) {
         meters.name.innerText = stats.name;
     }
+
+    if(meters.pronouns.innerText !== stats.pronouns) {
+        meters.pronouns.innerText = stats.pronouns;
+    }
 }
 
 // draws a creature into the context
